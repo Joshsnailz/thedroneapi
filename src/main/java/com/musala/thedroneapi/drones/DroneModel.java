@@ -1,2 +1,5 @@
-package com.musala.thedroneapi.drones;public enum DroneModel {
+package com.musala.thedroneapi.drones.db;
+
+public enum DroneModel {
+    LIGHTWEIGHT, MIDDLEWEIGHT, CRUISERWEIGHT, HEAVYWEIGHT
 }
