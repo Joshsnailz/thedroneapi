@@ -10,4 +10,6 @@ public interface MedicationService {
     MedicationResponse loadToDrone(Drone drone, LoadMedicationRequest request) throws Exception;
 
     List<MedicationResponse> checkLoadedMedication(Drone drone);
+
+    double getTotalWeight(Drone drone);
 }

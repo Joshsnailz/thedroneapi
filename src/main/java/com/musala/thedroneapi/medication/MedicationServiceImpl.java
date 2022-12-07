@@ -41,22 +41,27 @@ public class MedicationServiceImpl implements MedicationService {
                 .collect(Collectors.toList());
     }
 
-    private void validateRequest(Drone drone, LoadMedicationRequest request) throws Exception {
+    @Override
+    public double getTotalWeight(Drone drone) {
+        double currentDroneWeight = 0;
         List<Medication> medicationsAlreadyLoaded = medicationRepository.findAllByDrone(drone);
-        double currentDroneWeight = request.getMedicationWeight();
-
         if (!medicationsAlreadyLoaded.isEmpty()) {
             for (Medication med :
                     medicationsAlreadyLoaded)
                 currentDroneWeight += med.getMedicationWeight();
         }
+        return currentDroneWeight;
+    }
+
+    private void validateRequest(Drone drone, LoadMedicationRequest request) throws Exception {
+        double currentDroneWeight = getTotalWeight(drone);
 
         if (drone.getBatteryCapacity() < 25) {
             throw new BatteryCapacityException();
         }
 
-        if (!drone.getState().equals(DroneState.IDLE)) {
-            throw new Exception("The drone is not idle");
+        if (!drone.getState().equals(DroneState.IDLE) && !drone.getState().equals(DroneState.LOADING)) {
+            throw new Exception("The drone is not available for loading");
         }
 
         if (drone.getWeightLimit() < currentDroneWeight) {

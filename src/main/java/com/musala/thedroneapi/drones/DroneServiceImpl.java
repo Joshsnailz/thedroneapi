@@ -38,7 +38,19 @@ public class DroneServiceImpl implements DroneService {
     @Override
     public MedicationResponse loadDrone(long droneId, LoadMedicationRequest medicationRequest) throws Exception {
         Drone drone = droneRepository.getReferenceById(droneId);
+        if(drone.getState().equals(DroneState.IDLE)){
+            drone.setState(DroneState.LOADING);
+        }
+
+        double currentWeight = medicationService.getTotalWeight(drone);
+        if(drone.getWeightLimit() == currentWeight) {
+            drone.setState(DroneState.LOADED);
+        }
+
+        droneRepository.save(drone);
+
         return medicationService.loadToDrone(drone, medicationRequest);
+
     }
 
     @Override
